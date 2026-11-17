@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文献资料查询资源导航</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23A62B2B'/%3E%3Ctext x='16' y='22' font-size='15' fill='%23F6F1E8' text-anchor='middle' font-family='serif' font-weight='700'%3E文%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#F6F1E7;
+    --paper-2:#EFE8D8;
+    --ink:#2A241C;
+    --ink-soft:#5C5344;
+    --ink-mute:#8A7E6C;
+    --line:#DDD3C0;
+    --seal:#A62B2B;
+    --seal-deep:#8C1F1F;
+    --teal:#3E5A5A;
+    --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+    --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  a{color:inherit}
+
+  /* ===== Hero ===== */
+  .hero{
+    padding:44px 0 30px;
+    border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(1200px 300px at 8% -10%, rgba(166,43,43,.07), transparent 60%),
+      var(--paper);
+  }
+  .eyebrow{
+    display:flex;align-items:center;gap:10px;
+    font-size:13px;letter-spacing:.18em;color:var(--seal);
+    text-transform:none;margin-bottom:16px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--seal);display:inline-block}
+  .hero .seal{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:46px;height:46px;border-radius:4px;background:var(--seal);
+    color:var(--paper);font-family:var(--serif);font-weight:700;font-size:22px;
+    margin:0 14px 6px 0;flex:0 0 auto;vertical-align:middle;
+  }
+  .h-title{
+    font-family:var(--serif);font-weight:900;font-size:30px;line-height:1.25;
+    letter-spacing:.01em;color:var(--ink);
+  }
+  .h-sub{
+    margin-top:12px;color:var(--ink-soft);font-size:15px;max-width:640px;
+  }
+  .stats{display:grid;grid-template-columns:1fr;gap:10px;margin-top:22px}
+  .stat{
+    display:flex;align-items:baseline;gap:10px;
+    background:var(--paper-2);border:1px solid var(--line);
+    border-left:3px solid var(--seal);border-radius:6px;padding:12px 14px;
+  }
+  .stat .num{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--seal);font-variant-numeric:tabular-nums}
+  .stat .lab{font-size:13px;color:var(--ink-soft)}
+  .stat .src{font-size:11px;color:var(--ink-mute);margin-left:auto;white-space:nowrap}
+
+  /* ===== Section ===== */
+  section{padding:34px 0}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .sec-head h2{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--ink)}
+  .sec-head .tag{font-size:12px;letter-spacing:.14em;color:var(--seal);white-space:nowrap}
+  .sec-note{font-size:13px;color:var(--ink-mute);margin:-6px 0 16px}
+
+  /* ===== Chart ===== */
+  .chart-card{background:#FFFDF8;border:1px solid var(--line);border-radius:8px;padding:16px 12px}
+  #chart{width:100%;height:380px}
+  .chart-foot{font-size:12px;color:var(--ink-mute);margin-top:10px;padding:0 6px}
+
+  /* ===== Query ===== */
+  .search-bar{position:relative;margin-bottom:16px}
+  .search-bar input{
+    width:100%;padding:13px 16px 13px 44px;font-size:16px;color:var(--ink);
+    background:#FFFDF8;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);
+  }
+  .search-bar input:focus{outline:2px solid var(--seal);outline-offset:1px;border-color:var(--seal)}
+  .search-bar .ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 13px;border-radius:999px;border:1px solid var(--line);
+    background:#FFFDF8;font-size:13px;color:var(--ink-soft);cursor:pointer;user-select:none;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .chip .c{font-size:11px;opacity:.7;font-variant-numeric:tabular-nums}
+  .chip:hover{border-color:var(--seal);color:var(--seal)}
+  .chip.on{background:var(--seal);border-color:var(--seal);color:#FFF8EE}
+  .result-info{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-mute);margin:14px 0 12px}
+  .result-info b{color:var(--seal);font-weight:600}
+  .result-info .hint{margin-left:auto;font-size:12px}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .card{
+    display:flex;flex-direction:column;gap:8px;
+    background:#FFFDF8;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+    border-top:3px solid var(--cat);
+  }
+  .card .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .cat-tag{
+    font-size:11px;color:#FFF8EE;background:var(--cat);border-radius:4px;padding:2px 8px;white-space:nowrap;
+  }
+  .card .name{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--ink)}
+  .card .url{
+    display:inline-flex;align-items:center;gap:6px;max-width:100%;
+    font-size:12px;color:var(--teal);word-break:break-all;text-decoration:underline;text-underline-offset:3px;
+  }
+  .card .url:hover{color:var(--seal)}
+  .card .note{font-size:13px;color:var(--ink-soft)}
+
+  .empty{
+    text-align:center;padding:48px 16px;color:var(--ink-mute);font-size:14px;
+    background:#FFFDF8;border:1px dashed var(--line);border-radius:8px;
+  }
+  .empty .e1{font-family:var(--serif);font-size:18px;color:var(--ink-soft);margin-bottom:6px}
+
+  /* ===== Footer ===== */
+  footer{border-top:1px solid var(--line);padding:26px 0 44px;color:var(--ink-mute);font-size:12px}
+  footer .f-title{font-family:var(--serif);font-weight:600;color:var(--ink-soft);font-size:14px;margin-bottom:8px}
+
+  @media (min-width:600px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (min-width:768px){
+    .wrap{padding:0 32px}
+    .hero{padding:56px 0 38px}
+    .h-title{font-size:40px}
+    .stats{grid-template-columns:repeat(4,1fr);gap:12px}
+    .stat{flex-direction:column;gap:2px;padding:14px 16px}
+    .stat .src{margin-left:0;align-self:flex-start;margin-top:2px}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    #chart{height:420px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">面向新同学 · 检索资源导航</div>
+    <div>
+      <span class="seal" aria-hidden="true">文</span>
+      <span class="h-title">文献资料查询资源导航</span>
+    </div>
+    <p class="h-sub">从「文献相关」收藏夹整理而来——古籍、档案、报刊、学术、历史地图……按类型归好类，直接点开即可进入对应的检索入口。</p>
+    <div class="stats">
+      <div class="stat"><span class="num" id="st-cat">10</span><span class="lab">大资源分类</span></div>
+      <div class="stat"><span class="num" id="st-total">91</span><span class="lab">条已整理网址</span></div>
+      <div class="stat"><span class="num" id="st-max">20</span><span class="lab">电子书类最多</span></div>
+      <div class="stat"><span class="num" id="st-src">95</span><span class="lab">来源收藏总数</span><span class="src">4 处重复入口已合并</span></div>
+    </div>
+  </div>
+</div>
+
+<section id="report">
+  <div class="wrap">
+    <div class="sec-head"><h2>资源分布总览</h2><span class="tag">汇报用</span></div>
+    <div class="chart-card">
+      <div id="chart"></div>
+    </div>
+    <p class="chart-foot">口径：按「文献相关」收藏夹整理后的 91 条网址计；「电子书与文献资源下载」占比最高，综合学术检索平台、古籍文献数据库次之，适合作为汇报时的资源结构概览。</p>
+  </div>
+</section>
+
+<section id="query">
+  <div class="wrap">
+    <div class="sec-head"><h2>按分类查询</h2><span class="tag">查询用</span></div>
+    <div class="search-bar">
+      <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="text" inputmode="search" autocomplete="off" placeholder="输入关键词，如「古籍」「报刊」「北京」「寺庙」…">
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="result-info"><span>共 <b id="res-count">0</b> 条结果</span><span class="hint">点击网址在新标签页打开</span></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>
+      <div class="e1">没有匹配的网址</div>
+      <div>换个关键词，或点「全部」清空分类筛选。</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-title">使用提示</div>
+    <p>检索古籍优先看馆藏与版本来源；报刊与近代文献请直接进对应专门库；电子书用于补全文，引用与下载请注意版权与授权。关键史实、原文、数据请务必回到原始数据库核实。</p>
+  </div>
+</footer>
+
+<script src="https://fastly.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script>
+/* ===== 数据（91 条，来源于「文献相关」收藏夹，4 处重复入口已合并） ===== */
+const CATS = [
+  {name:"综合文献与学术检索平台", color:"#3E6263"},
+  {name:"古籍文献数据库", color:"#8A5A3B"},
+  {name:"报刊与近代文献数据库", color:"#A0302B"},
+  {name:"档案与史料机构数据库", color:"#5A4A63"},
+  {name:"图书馆资源", color:"#4A7A66"},
+  {name:"电子书与文献资源下载", color:"#6B6B63"},
+  {name:"出版与书目信息", color:"#3E5370"},
+  {name:"历史地图与地理信息", color:"#6F7A4E"},
+  {name:"专题研究、史料整理与社区论坛", color:"#8A6B4A"},
+  {name:"语言语料与AI辅助工具", color:"#5A5A5A"}
+];
+const DATA = [
+  [0,"中国国家图书馆·国家数字图书馆","https://www.nlc.cn/web/index.shtml","国家级总入口，找书、找资料从这起步"],
+  [0,"文津搜索","http://find.nlc.cn/","国家图书馆统一资源检索（图书/论文/报刊）"],
+  [0,"读者云门户","http://read.nlc.cn/allSearch/searchDetail?searchType=1002&showType=1&indexName=data_403&fid=312001067784","国家图书馆读者数字资源门户"],
+  [0,"PubScholar 公益学术平台","https://pubscholar.cn/","中科院牵头的中文学术文献公益检索"],
+  [0,"国家哲学社会科学文献中心","https://www.ncpssd.org/","社科文献免费检索平台（另域名 ncpssd.cn）"],
+  [0,"全国图书馆参考咨询联盟","http://www.ucdrs.superlib.net/","跨馆文献传递与参考咨询"],
+  [0,"熊猫学术搜索","https://scholar.xmsoushu.com/","学术文献聚合检索"],
+  [0,"思谋学术（谷歌学术镜像）","https://ac.scmor.com/","外文/学术文献检索"],
+  [0,"百万文献搜索","https://dl.zzyyww.cn/pdf/","批量文献检索入口"],
+  [0,"中文数据库","http://www.90tsg.com/e/action/ListInfo/?classid=61","中文期刊数据库聚合"],
+  [1,"中华古籍智慧化服务平台","https://guji.nlc.cn/","国家图书馆古籍数字资源，可按省/馆藏查询"],
+  [1,"识典古籍","https://www.shidianguji.com/","古籍在线阅读平台"],
+  [1,"文心阁古籍数据库","http://zj.gujionline.com/wenxinge/home/doc/index.do","古籍数据库"],
+  [1,"籍合网","https://www.ancientbooks.cn/","中华书局古籍整理数字平台"],
+  [1,"绿叶山文库","https://lvyeshan.com/","电子古籍库"],
+  [1,"中华典藏","https://www.diancang.xyz/tianwendili/dijingjingwulue/","古籍在线阅读（含《帝京景物略》《宛署杂记》）"],
+  [1,"收藏爱好者·百万古籍库","https://www.fozhu920.com/","古籍、族谱、县志、中医等古籍库"],
+  [1,"古书网导航","http://d.gushu.net.cn/","古籍网站聚合导航"],
+  [1,"史語所古典目錄典籍導航系統","https://ihparchive.ihp.sinica.edu.tw/ihpacbc/ihpacbkm","台湾中研院史语所古籍目录"],
+  [1,"漢籍全文資料庫","https://hanchi.ihp.sinica.edu.tw/ihp/hanji.htm","台湾中研院古籍全文库"],
+  [1,"雙紅堂文庫全文影像資料庫","https://hong.ioc.u-tokyo.ac.jp/list.php","东京大学古籍影像资料库"],
+  [1,"古文岛（原古诗文网）","https://www.gushiwen.cn/","古诗文查询"],
+  [1,"县志/地名志/家谱","https://www.xianzhipdf.com/","地方志、家谱资料"],
+  [1,"书格","https://www.shuge.org/","开放共享的善本古籍数字资源"],
+  [2,"全国报刊索引","https://www.cnbksy.cn/home","近代以来报刊文献索引数据库"],
+  [2,"全国报刊索引（检索入口）","http://www.8090chachong.com/e/action/ListInfo/?classid=215","同上数据库的检索入口"],
+  [2,"全国报刊大全·在线读报","http://www.53bk.com/baokan/","在线看报、报刊导航"],
+  [2,"晚清和民国时期中文报纸集","https://gpa.eastview.com/crl/lqrcn/","晚清民国中文报纸全文"],
+  [2,"抗日战争与近代中日关系文献数据平台","https://www.modernhistory.org.cn/","抗战与近代史文献数据"],
+  [2,"中国历史文献总库","http://llb.hggfdd.top/e/action/ListInfo/?classid=241","历史文献总库"],
+  [2,"城市小報資料庫","https://mhdb.mh.sinica.edu.tw/newsp/newspaper.php","台湾中研院城市小报数据库"],
+  [3,"中国第一历史档案馆","https://fhac.com.cn/index.html","明清档案"],
+  [3,"北京市档案信息网","https://www.bjma.gov.cn/","北京市档案"],
+  [3,"北京记忆","https://bjmemory.clcn.net.cn/","北京地方文献数字资源"],
+  [3,"京网（市委党史研究室·市地方志办）","https://www.bjdsdfz.cn/","北京党史与地方志"],
+  [3,"內閣大庫檔案","https://newarchive.ihp.sinica.edu.tw/mcttp/","台湾中研院内阁大库档案"],
+  [3,"中央研究院 MHDB 历史文献库","https://mhdb.mh.sinica.edu.tw/","台湾中研院历史文献数据库"],
+  [3,"中央研究院 明清研究推動委員會","https://mingqing.sinica.edu.tw/","明清研究学术平台"],
+  [3,"國立故宮博物院","https://www.npm.gov.tw/","故宫院藏文献、文物数字资源"],
+  [3,"东京文化财研究所 资料阅览室","https://www.tobunken.go.jp/joho/japanese/library/info/search.html","日本东京文化财研究所文献"],
+  [3,"東京文化財研究所 OPAC","https://opac.tobunken.go.jp/top/index","东京文化财所馆藏检索"],
+  [3,"奈良文化財研究所","https://www.nabunken.go.jp/","日本奈良文化财研究所文献"],
+  [3,"北京市文物局","https://wwj.beijing.gov.cn/bjww/362760/362767/kycgtg/ktxm/sskghblxkt/511109/index.html","北京文物工作信息与研究成果"],
+  [3,"第四次全国文物普查综合管理系统","http://106.63.13.70:122/loginController.do?login","文物普查专项系统"],
+  [4,"北京建筑大学图书馆·数字资源","https://library.door.bucea.edu.cn/home/node/367.jspx","校内数据库入口"],
+  [4,"北京市东城区图书馆","https://www.bjdclib.com/","区级公共图书馆"],
+  [4,"东华流韵（东城区图书馆）","https://www.bjdclib.com/ztfw/dhly/","北京东城地方文献专题"],
+  [5,"Z-Library 入口网站","https://zlib.wwwnav.com/","电子书库镜像入口"],
+  [5,"Zlibrary 客户端及电子书库","https://docs.qq.com/sheet/DVktIVU1KRHN5YVZt","共享电子书库表"],
+  [5,"Anna's Archive（安娜的档案）","https://zh.annas-archive.gl/","聚合电子书、论文资源"],
+  [5,"annas-archive-hub","https://github.com/D4vRAM369/annas-archive-hub","安娜档案镜像地址追踪"],
+  [5,"无名图书","https://www.book345.com/","电子书检索"],
+  [5,"热点图书网","https://www.happydot.top/","免费电子书分享"],
+  [5,"千秋书在","https://www.35ppt.com/","精品电子书分享"],
+  [5,"读书网","https://www.dushu.com/","图书检索"],
+  [5,"找书网","https://findbooks.eu.org/","图书信息检索"],
+  [5,"鸠摩搜索","https://www.jiumodiary.com/","文档、电子书聚合搜索引擎"],
+  [5,"雅书","https://yabook.blog/book/74310.html","电子书下载（含《北京内城寺庙碑刻志》）"],
+  [5,"轩博书舍","https://xbsu.com/63421_9787508673257.htm","电子书（如《香火新缘》）"],
+  [5,"GitHub·个人收藏书籍","https://github.com/Dujltqzv/Some-Many-Books","书单及网盘电子书"],
+  [5,"熊猫搜索导航","https://xmsoushu.com/","电子资源聚合搜索导航"],
+  [5,"度盘文件位置查询","https://ss2bd.eu.org/","网盘文件检索"],
+  [5,"文献云图书馆","http://www.wxtsg.top/","文献电子书资源站"],
+  [5,"知云阁导航","https://dh.zhiyunge.cn/","综合资源导航"],
+  [5,"硬核指南","https://yinghezhinan.com/","高清影视、资源站导航"],
+  [5,"appxiazai","https://appxiazai.pages.dev/","影视、电子书、磁力等资源导航"],
+  [5,"2025gj 精选在线工具","https://2025gj.pages.dev/","综合资源入口导航"],
+  [6,"全国新书目·国家版本数据中心","https://cnpub.com.cn/","新书书目、版本数据"],
+  [6,"中国权威出版物数据服务平台（PDC）","https://pdc.capub.cn/","权威出版数据"],
+  [7,"国家地理信息公共服务平台·天地图","https://www.tianditu.gov.cn/","地图、地理信息服务"],
+  [7,"数字丝绸之路·古都北京数字地图","https://dsr.nii.ac.jp/beijing-maps/index.html.zh","古都北京历史地图"],
+  [7,"1934年《最新北平市详图》","https://www.dituji.com/zggjdt/jddt/1934%E5%B9%B4%E3%80%8A%E6%9C%80%E6%96%B0%E5%8C%97%E5%B9%B3%E5%B8%82%E8%AF%A6%E5%9B%BE%E3%80%8B/","历史地图"],
+  [7,"近代北京地图打包下载","https://www.ditu114.com/ditu/1121.html","近代北京地图"],
+  [8,"近代北京寺庙的类型结构解析","https://www.fjdh.cn/wumin/2009/04/22371665999.html","专题研究文章"],
+  [8,"中国宗教学术网","http://iwr.cssn.cn/ddzjyjs/lw/202310/t20231017_5690949.shtml","宗教研究学术文章"],
+  [8,"1949年以来北京城区寺观变迁研究","https://wwj.beijing.gov.cn/bjww/362760/362767/kycgtg/ktxm/sskghblxkt/511109/index.html","研究项目成果"],
+  [8,"北京老城元明清寺庙时空分布及影响因素分析","https://nfjz.arch.scut.edu.cn/CN/10.3969/j.issn.1000-0232.2024.12.008","学术论文全文"],
+  [8,"1939年北京寺庙建筑旧影","http://www.laozhaopian5.com/minguo/2321.html","老照片史料"],
+  [8,"有关北京寺庙的史料一","https://www.douban.com/group/topic/4386777/","史料整理讨论"],
+  [8,"老北京网·服务器里的北京","http://www.obj.cc/","北京历史论坛"],
+  [8,"钱粮胡同19号·服务器里的北京","http://cn.obj.cc/article-12899-1.html","北京建筑史地资料"],
+  [8,"近现代史学必备·两大免费民国报刊数据库","https://history.sohu.com/a/962298081_121106884","报刊数据库介绍文章"],
+  [8,"北京日报","https://pc.bjd.com.cn/","北京本地权威资讯"],
+  [8,"北京数字文化资源库（报道）","https://news.bjd.com.cn/2022/05/18/10089141.shtml","资源库介绍"],
+  [9,"MNBVC 超大规模中文语料集","https://mnbvc.253874.net/","中文语料数据"],
+  [9,"MNBVC 数据集","https://huggingface.co/datasets/liwu/MNBVC","语料数据集"],
+  [9,"MNBVC Wiki","https://wiki.mnbvc.org/doku.php/start","语料使用文档"],
+  [9,"OpenAI","https://openai.com/zh-Hans-CN/","AI 工具（辅助查询）"],
+  [9,"ChatGPT","https://chatgpt.com/","AI 对话工具"],
+  [9,"资料·综合资源站","http://quick9.shenzhuo.vip:52891/index","综合资源"],
+  [9,"无知便是罪（ddlink）","https://linkdd.cn/wuzhi","资源导航"]
+];
+
+/* ===== 状态 ===== */
+const state = {cat: -1, q: ""};
+
+/* ===== 分类计数 ===== */
+function countByCat(){
+  const c = CATS.map(()=>0);
+  DATA.forEach(d=>c[d[0]]++);
+  return c;
+}
+
+/* ===== 统计 ===== */
+const catCount = countByCat();
+document.getElementById("st-total").textContent = DATA.length;
+document.getElementById("st-max").textContent = Math.max(...catCount);
+document.getElementById("st-cat").textContent = CATS.length;
+
+/* ===== 汇报：ECharts 横向条形（单色、降序） ===== */
+(function(){
+  const rows = CATS.map((c,i)=>({name:c.name, v:catCount[i]}))
+    .sort((a,b)=>b.v-a.v);
+  const chart = echarts.init(document.getElementById("chart"));
+  chart.setOption({
+    grid:{left:10,right:44,top:6,bottom:6,containLabel:true},
+    tooltip:{confine:true,trigger:"axis",axisPointer:{type:"shadow"}},
+    xAxis:{type:"value",min:0,axisLabel:{color:"#8A7E6C",fontSize:11},splitLine:{lineStyle:{color:"#EFE8D8"}}},
+    yAxis:{type:"category",data:rows.map(r=>r.name),axisLabel:{color:"#2A241C",fontSize:12,fontFamily:"Noto Sans SC"},axisLine:{show:false},axisTick:{show:false}},
+    series:[{
+      type:"bar",data:rows.map(r=>r.v),barWidth:"54%",itemStyle:{color:"#A62B2B",borderRadius:[0,3,3,0]},
+      label:{show:true,position:"right",color:"#5C5344",fontSize:12,fontFamily:"Noto Serif SC",fontWeight:600,formatter:"{c}"}
+    }]
+  });
+  window.addEventListener("resize",()=>chart.resize());
+})();
+
+/* ===== 查询：筛选 + 渲染 ===== */
+const gridEl = document.getElementById("grid");
+const chipsEl = document.getElementById("chips");
+const emptyEl = document.getElementById("empty");
+
+function renderChips(){
+  let h = `<button class="chip ${state.cat===-1?'on':''}" data-c="-1" type="button">全部 <span class="c">${DATA.length}</span></button>`;
+  CATS.forEach((c,i)=>{
+    h += `<button class="chip ${state.cat===i?'on':''}" data-c="${i}" type="button">${c.name} <span class="c">${catCount[i]}</span></button>`;
+  });
+  chipsEl.innerHTML = h;
+}
+
+function matches(d){
+  if(state.cat!==-1 && d[0]!==state.cat) return false;
+  if(!state.q) return true;
+  const q = state.q.toLowerCase();
+  return (d[1]+d[2]+d[3]).toLowerCase().indexOf(q)!==-1;
+}
+
+function render(){
+  const list = DATA.filter(matches);
+  document.getElementById("res-count").textContent = list.length;
+  emptyEl.hidden = list.length>0;
+  if(list.length===0){ gridEl.innerHTML=""; return; }
+  gridEl.innerHTML = list.map(d=>{
+    const cat = CATS[d[0]];
+    return `<div class="card" style="--cat:${cat.color}">
+      <div class="row1"><span class="cat-tag">${cat.name}</span><span class="name">${d[1]}</span></div>
+      <a class="url" href="${d[2]}" target="_blank" rel="noopener">${d[2]}</a>
+      <span class="note">${d[3]}</span>
+    </div>`;
+  }).join("");
+}
+
+chipsEl.addEventListener("click",e=>{
+  const b = e.target.closest("button.chip");
+  if(!b) return;
+  state.cat = parseInt(b.dataset.c,10);
+  renderChips(); render();
+});
+
+document.getElementById("q").addEventListener("input",e=>{
+  state.q = e.target.value.trim();
+  render();
+});
+
+renderChips();
+render();
+</script>
+</body>
+</html>
